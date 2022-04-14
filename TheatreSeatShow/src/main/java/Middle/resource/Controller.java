@@ -3,6 +3,7 @@ package Middle.resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import Middle.model.CompositeId;
 import Middle.model.SeatEntity;
+import Middle.model.SeatUpdate;
 import Middle.model.ShowEntity;
 import Middle.model.TheatreEntity;
 import Middle.resource.SeatService;
@@ -120,21 +123,23 @@ public class Controller {
 	*/
 	
 	@PostMapping("/changeseatstatus")
-	public SeatEntity changeSeatStatus(@RequestBody SeatEntity seatEntity) {
+	public void changeSeatStatus(@RequestBody SeatUpdate seatUpdate) {
 		
 		ArrayList<SeatEntity> s = new ArrayList<>();
-		s = (ArrayList<SeatEntity>) seatRepo.findAll();
-		for(SeatEntity e: s) {
-			if(e.getCompositeId().getTheatreId().equals(seatEntity.getCompositeId().getTheatreId()) && e.getCompositeId().getShowId().equals(seatEntity.getCompositeId().getShowId()) && e.getCompositeId().getSeatNumber().equals(seatEntity.getCompositeId().getSeatNumber())) {
-				e.setIsOccupied("false");
-				seatRepo.save(e);
-				return e;
-			}
+		//employeeRepository.findById(new EmployeeIdentity("E-123", "D-457"));
+		List<String> seatList = seatUpdate.getSeatList();
+		for(String seatNumber: seatList) {
+			
+			CompositeId compositeId = new CompositeId(seatNumber, seatUpdate.getTheatreId(), seatUpdate.getShowId());
+			SeatEntity seatEntity = seatRepo.findByCompositeId(compositeId);
+			seatEntity.setIsOccupied("True");
+			seatRepo.save(seatEntity);
+	
 		}
-		return new SeatEntity();
-		
-		
 	}
+	
+	
+	
 	
 	@GetMapping("/locations")
 	public ArrayList<String> getLocations() {
@@ -191,21 +196,6 @@ public class Controller {
 		return showRepo.findById(showid).get();
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 }
 
