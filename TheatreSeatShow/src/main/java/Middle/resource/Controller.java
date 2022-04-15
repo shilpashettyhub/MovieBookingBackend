@@ -196,6 +196,15 @@ public class Controller {
 		return showRepo.findById(showid).get();
 	}
 	
+	
+	@GetMapping("/getmoviename/{showId}")
+	public String getMovieName(@PathVariable String showId) {
+		
+		return showRepo.findById(showId).get().getMovieName();
+		
+	}
+	
+	
 		
 }
 

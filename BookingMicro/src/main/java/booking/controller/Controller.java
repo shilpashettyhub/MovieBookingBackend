@@ -1,6 +1,7 @@
 package booking.controller;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,14 +12,22 @@ import booking.model.ShowEntity;
 import booking.resource.BookingRepo;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class Controller {
 	
 	@Autowired
 	BookingRepo bookingRepo;
 	
-	@GetMapping("/bookings")
-	public ArrayList<BookingEntity> getBookings(){
-		return (ArrayList<BookingEntity>) bookingRepo.findAll();
+	@GetMapping("/bookings/{userId}")
+	public ArrayList<BookingEntity> getBookings(@PathVariable String userId){
+		ArrayList<BookingEntity> bookings = (ArrayList<BookingEntity>) bookingRepo.findAll();
+		ArrayList<BookingEntity> userBookings = new ArrayList<BookingEntity>();
+		for(BookingEntity b: bookings) {
+			if(b.getUserId().equals(userId)) {
+				userBookings.add(b);
+			}
+		}
+		return userBookings;
 	}
 	
 	@PostMapping("/savebookings/{userid}/{nos}")

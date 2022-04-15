@@ -3,6 +3,7 @@ package User.resource;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -108,8 +109,8 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/{email}")
-	public Optional<Users> getUser(@PathVariable String email){
-		return userService.findById(email);
+	public Users getUser(@PathVariable String email){
+		return userService.findById(email).get();
 	
 	}
 	
